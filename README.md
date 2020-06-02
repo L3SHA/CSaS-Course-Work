@@ -1,1 +1,1 @@
-# CSaS
+# Telegram JobSearcher Bot
