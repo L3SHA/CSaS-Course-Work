@@ -3,7 +3,7 @@ package commands.search;
 import commands.Command;
 import commands.CommandEnum;
 import commands.Utilities;
-import filters.UserFiltersDao;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import responses.Response;
 import user.User;
 
@@ -20,7 +20,7 @@ public class SearchCommand extends Command {
     @Override
     public Response execute() {
         final List<CommandEnum> filterCommandEnums = new ArrayList<>(Arrays.asList(CommandEnum.CATALOGUES, CommandEnum.EXPERIENCE,
-                CommandEnum.SALARYFROM, CommandEnum.SALARYTO, CommandEnum.AGE, CommandEnum.PLACEOFWORK, CommandEnum.FIND));
+                CommandEnum.SALARYFROM, CommandEnum.SALARYTO, CommandEnum.AGE, CommandEnum.PLACEOFWORK, CommandEnum.FIND, CommandEnum.CLEARFILTERS, CommandEnum.BACK_MENU));
 
         ResourceBundle constants = localeService.getMessageBundle(user.getCurrentLocale());
 
@@ -30,9 +30,7 @@ public class SearchCommand extends Command {
 
         response.setMessage(constants.getString("filter_header"));
 
-        response.getMarkup().setKeyboard(Utilities.mapButtonsByTwo(filterCommandEnums, user.getCurrentLocale()));
-
-        UserFiltersDao.getInstance().clearFilters(user.getChatId());//clear filters to start new search history
+        response.setMarkup(new InlineKeyboardMarkup(Utilities.mapButtonsByTwo(filterCommandEnums, user.getCurrentLocale())));
 
         return response;
     }

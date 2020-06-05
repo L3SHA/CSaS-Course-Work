@@ -3,6 +3,7 @@ package commands.profile;
 import commands.Command;
 import commands.CommandEnum;
 import commands.Utilities;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import responses.Response;
 import user.User;
 
@@ -18,11 +19,11 @@ public class ProfileCommand extends Command {
 
     @Override
     public Response execute() {
-        final List<CommandEnum> menuCommands = new ArrayList<>(Arrays.asList(CommandEnum.PROFILE_INFO, CommandEnum.RESUMES, CommandEnum.CREATE_RESUME, CommandEnum.BACK_MENU));
+        final List<CommandEnum> menuCommands = new ArrayList<>(Arrays.asList(CommandEnum.PROFILE_INFO, CommandEnum.FAVORITES, CommandEnum.BACK_MENU));
         Response response = new Response();
         Locale locale = user.getCurrentLocale();
         response.setMessage(CommandEnum.PROFILE_INFO.getCaption(locale));
-        response.getMarkup().setKeyboard(Utilities.mapButtonsByTwo(menuCommands, locale));
+        response.setMarkup(new InlineKeyboardMarkup(Utilities.mapButtonsByTwo(menuCommands, locale)));
 
         int editMessageId = user.getCurrentUpdate().getCallbackQuery().getMessage().getMessageId();
         response.setEditMessageId(editMessageId);

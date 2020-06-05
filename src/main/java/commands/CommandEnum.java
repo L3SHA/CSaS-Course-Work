@@ -20,14 +20,17 @@ public enum CommandEnum {
     FAVORITES("/favorites", "favorites_item"),
     CATALOGUES("/catalogues", "catalogues_item"),
     SALARYFROM("/salaryfrom", "salary_from_item"),
-    SALARYTO("salaryto", "salary_to_item"),
+    SALARYTO("/salaryto", "salary_to_item"),
     AGE("/age", "age_item"),
     EXPERIENCE("/experience", "experience_item"),
     PLACEOFWORK("/placeofwork", "place_of_work_item"),
     LANGUAGE("/lang", "language_item"),
     PREVIOUSPAGE("/previouspage", "previous_page_item"),
     NEXTPAGE("/nextpage", "next_page_item"),
-    OTHER("undefined", "undefined_item");
+    OTHER("undefined", "undefined_item"),
+    CLEARFILTERS("/clearfilters", "clear_filters_item"),
+    SHOWVACANCYINFO("/more", "vacancy_info_item"),
+    ADDFAVORITES("/addfavorites", "add_favorites_item");
 
 
     private static LocaleService localeService = LocaleServiceImpl.getInstance();

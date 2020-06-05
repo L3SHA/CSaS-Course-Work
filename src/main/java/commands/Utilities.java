@@ -13,7 +13,6 @@ public class Utilities {
     public static List<List<InlineKeyboardButton>> mapButtonsByTwo(List<CommandEnum> commandEnums, Locale locale) {
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
-
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         int i = 0;
         for (CommandEnum commandEnum
@@ -37,4 +36,5 @@ public class Utilities {
 
         return rowsInline;
     }
+
 }

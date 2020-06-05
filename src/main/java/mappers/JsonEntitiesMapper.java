@@ -3,16 +3,14 @@ package mappers;
 import authorization.AuthToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import network.Coordinates;
 import user.UserInfo;
 import vacancies.Catalogue;
 import vacancies.VacanciesInfo;
 import vacancies.Vacancy;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JsonEntitiesMapper implements EntitiesMapper {
     private ObjectMapper mapper = new ObjectMapper();
@@ -25,7 +23,20 @@ public class JsonEntitiesMapper implements EntitiesMapper {
             Vacancy vacancy = new Vacancy();
             vacancy.setId((int) rawVacancy.get("id"));
             vacancy.setProfession((String) rawVacancy.get("profession"));
-            vacancy.setPublicationDate((int) rawVacancy.get("date_published"));
+            Map<String, Object> objectMap = (Map<String, Object>) rawVacancy.get("place_of_work");
+            vacancy.setPlaceOfWork((Integer) objectMap.get("id"));
+            objectMap = (Map<String, Object>) rawVacancy.get("type_of_work");
+            vacancy.setTypeOfWork((Integer) objectMap.get("id"));
+            vacancy.setContactName((String) rawVacancy.get("contact"));
+            vacancy.setEmail((String) rawVacancy.get("email"));
+            vacancy.setPhone((String) rawVacancy.get("phone"));
+            vacancy.setSalaryFrom((Integer) rawVacancy.get("payment_from"));
+            vacancy.setCompanyName((String) rawVacancy.get("firm_name"));
+            vacancy.setSalaryTo((Integer) rawVacancy.get("payment_to"));
+            if (rawVacancy.get("address") != null) {
+                vacancy.setAddress((String) rawVacancy.get("address"));
+            }
+            vacancy.setPublicationDate(new Date((int) rawVacancy.get("date_published") * 1000L));
             LinkedHashMap<String, Object> townInfo = (LinkedHashMap<String, Object>) rawVacancy.get("town");
             vacancy.setTown((String) townInfo.get("title"));
             vacancies.add(vacancy);
@@ -64,4 +75,33 @@ public class JsonEntitiesMapper implements EntitiesMapper {
         return authToken;
     }
 
+    @Override
+    public Coordinates mapCoords(String json) {
+        try {
+            Map<String, Object> values = mapper.readValue(json, Map.class);
+            Map<String, Object> response = (Map<String, Object>) values.get("response");
+            Map<String, Object> geoObjectCollection = (Map<String, Object>) response.get("GeoObjectCollection");
+            ArrayList<Object> featureMember = (ArrayList<Object>) geoObjectCollection.get("featureMember");
+            Map<String, Object> geoObject = (Map<String, Object>) featureMember.get(0);
+            Map<String, Object> innerObj = (Map<String, Object>) geoObject.get("GeoObject");
+            Map<String, Object> point = (Map<String, Object>) innerObj.get("Point");
+
+            String pos = (String) point.get("pos");
+            String[] coords = pos.split("\\s+");
+
+            return new Coordinates(Double.valueOf(coords[1]), Double.valueOf(coords[0]));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
+
+//    Map<String, Object> values = mapper.readValue(json, Map.class);
+//    ArrayList<Object> results = (ArrayList<Object>) values.get("results");
+//    Map<String, Object> item = (Map<String, Object>) results.get(0);
+//    ArrayList<Object> locations = (ArrayList<Object>) item.get("locations");
+//    Map<String, Object> properties = (Map<String, Object>) locations.get(0);
+//    Map<String, Double> coords = (Map<String, Double>) properties.get("displayLatLng");
